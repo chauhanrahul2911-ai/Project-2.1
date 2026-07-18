@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GSRTC Conductor Prep 2026</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,800&family=Hind+Vadodara:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <div class="top-navbar">
+        <button class="menu-trigger" onclick="toggleSidebar()">☰</button>
+        <span>શ્રી સરસ્વતી કરિયર એકેડમી</span>
+    </div>
+
+    <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
+    <div id="sidebar" class="sidebar">
+        <button class="sidebar-close" onclick="toggleSidebar()">×</button>
+        <div class="sidebar-brand">શ્રી સરસ્વતી કરિયર એકેડમી</div>
+        
+        <div id="profile-area" class="profile-section">
+            </div>
+
+        <ul class="sidebar-menu">
+            <li class="sidebar-item active-menu" onclick="changeScreenFromSidebar('screen-subjects')">🏠 Home Dashboard</li>
+            <li class="sidebar-item" onclick="alert('તમારો કુલ સ્કોર પ્રોફાઇલ સેક્શનમાં જોઈ શકાય છે.')">📊 My Progress Report</li>
+            <li class="sidebar-item" onclick="alert('WhatsApp Help Support: 9999999999')">💬 Contact Support Help</li>
+        </ul>
+    </div>
+
+    <div id="screen-subjects" class="screen active">
+        <header>
+            <h1>વિષય વાઇઝ ટેસ્ટ સિરીઝ</h1>
+            <p>તમારી પ્રગતિ અને વિષય પસંદ કરો</p>
+        </header>
+        <div class="grid" id="subjects-container">
+            </div>
+    </div>
+    
+    <div id="screen-branches" class="screen">
+        <button class="back-btn" onclick="window.history.back()">⬅️ પાછા જાઓ</button>
+        <header>
+            <h1 id="current-subject-title-branch">વિષયનું નામ</h1>
+            <p>તમારો ચેપ્ટર (Branch) પસંદ કરો</p>
+        </header>
+        <div class="grid" id="branches-container">
+            </div>
+    </div>
+    
+    <div id="screen-type-select" class="screen">
+        <button class="back-btn" onclick="window.history.back()">⬅️ પાછા જાઓ</button>
+        <header>
+            <h1 id="current-subject-name">વિષય</h1>
+            <p>તમારો ટેસ્ટ પ્રકાર પસંદ કરો</p>
+        </header>
+        <div class="grid" style="margin-top: 3rem;">
+            <div class="card" style="padding: 2.5rem; flex-direction:column; justify-content: center;" onclick="goToQuizList('Quiz')">
+                <span>Topic Quiz (ટોપિક ક્વિઝ)</span>
+                <span class="sub-perc" id="quiz-type-perc">Progress: 0%</span>
+            </div>
+            <div class="card" style="padding: 2.5rem; flex-direction:column; justify-content: center;" onclick="goToQuizList('Mock Test')">
+                <span>Full Mock Test (મોક ટેસ્ટ)</span>
+                <span class="sub-perc" id="mock-type-perc">Progress: 0%</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="screen-quiz-list" class="screen">
+        <button class="back-btn" onclick="window.history.back()">⬅️ પાછા જાઓ</button>
+        <header>
+            <h1 id="current-list-title">ટેસ્ટ લિસ્ટ</h1>
+            <p>પ્રેક્ટિસ શરૂ કરવા માટે ટેસ્ટ પર ક્લિક કરો</p>
+        </header>
+        <div id="dynamic-list-container" style="margin-top: 2rem;"></div>
+    </div>
+
+    <div id="paywall-modal" class="modal">
+        <div class="modal-content">
+            <h3>🔒 પ્રીમિયમ પ્લાન</h3>
+            <p>ટેસ્ટ 4 થી આગળના બધા ક્વિઝ અને મોક ટેસ્ટ આ પ્લાનથી ખૂલે છે.</p>
+            <h2 style="color:var(--gold); margin: 15px 0;">₹149</h2>
+            <button class="btn" style="width: 100%; margin-bottom: 0.7rem;" onclick="simulatePayment()">Buy Now</button>
+            <button class="back-btn" onclick="closePaywall()">બંધ કરો</button>
+        </div>
+    </div>
+
+<script src="js/new_main.js"></script>
+</body>
+</html>
