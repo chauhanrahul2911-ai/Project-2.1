@@ -1,4 +1,4 @@
-// 🚀 NEW SESSIONSTORAGE PARSING ENGINE ✅
+// 🚀 NEW LOCALSTORAGE PARSING ENGINE ✅
 const subject      = localStorage.getItem('last_active_subject'); 
 const branch       = localStorage.getItem('last_active_branch_guj') || ""; 
 const branchFolder = localStorage.getItem('last_active_branch') || ""; 
@@ -13,29 +13,25 @@ if (!subject) {
 const cleanBranchTitle = branch.split('(')[0].trim();
 document.getElementById('quiz-title').innerText = `${cleanBranchTitle} - ${type} ${quizNo}`;
 
-// 🔐 SESSION IDENTITY GUARD: Ye current quiz ka unique fingerprint hai.
-// Agar sessionStorage mein kisi DUSRE quiz ka leftover data pada hai
-// (e.g. user beech mein back button dabake nikal gaya tha), to use yahan
-// use karne se pehle hi saaf kar dete hain — warna galat score/answers
-// naye quiz mein dikh sakte the.
+// 🔐 LOCALSTORAGE IDENTITY GUARD: Claude's Security Engine Synced to LocalStorage
 const quizSessionKey = `${subject}_${branchFolder}_${type}_${quizNo}`;
-if (sessionStorage.getItem('quiz_session_key') !== quizSessionKey) {
-    sessionStorage.removeItem('quiz_current_idx');
-    sessionStorage.removeItem('quiz_current_score');
-    sessionStorage.removeItem('quiz_user_choices');
-    sessionStorage.removeItem('quiz_time_left');
-    sessionStorage.removeItem('quiz_is_review');
-    sessionStorage.setItem('quiz_session_key', quizSessionKey);
+if (localStorage.getItem('quiz_session_key') !== quizSessionKey) {
+    localStorage.removeItem('quiz_current_idx');
+    localStorage.removeItem('quiz_current_score');
+    localStorage.removeItem('quiz_user_choices');
+    localStorage.removeItem('quiz_time_left');
+    localStorage.removeItem('quiz_is_review');
+    localStorage.setItem('quiz_session_key', quizSessionKey);
 }
 
-// 🎯 REFRESH LOCK ENGINE: Session se state uthao ya zero se shuru karo
+// 🎯 REFRESH LOCK ENGINE: LocalStorage se state uthao ya zero se shuru karo
 var quizData = []; 
-var currentIdx = parseInt(sessionStorage.getItem('quiz_current_idx')) || 0; 
-var score = parseInt(sessionStorage.getItem('quiz_current_score')) || 0; 
+var currentIdx = parseInt(localStorage.getItem('quiz_current_idx')) || 0; 
+var score = parseInt(localStorage.getItem('quiz_current_score')) || 0; 
 var answered = false;
-var timeLeft = parseInt(sessionStorage.getItem('quiz_time_left')) || 600; 
-var isReview = sessionStorage.getItem('quiz_is_review') === 'true'; 
-var userChoices = JSON.parse(sessionStorage.getItem('quiz_user_choices')) || [];
+var timeLeft = parseInt(localStorage.getItem('quiz_time_left')) || 600; 
+var isReview = localStorage.getItem('quiz_is_review') === 'true'; 
+var userChoices = JSON.parse(localStorage.getItem('quiz_user_choices')) || [];
 var isMuted = false; 
 var timerInterval;
 
@@ -60,7 +56,7 @@ function startCountdown() {
     timerInterval = setInterval(function() {
         if(isReview) return;
         timeLeft--;
-        sessionStorage.setItem('quiz_time_left', timeLeft); // Save time on every tick
+        localStorage.setItem('quiz_time_left', timeLeft); // Save time on every tick
         var mins = Math.floor(timeLeft / 60); 
         var secs = timeLeft % 60;
         document.getElementById('timer-display').innerText = "⌛ " + (mins < 10 ? "0"+mins : mins) + ":" + (secs < 10 ? "0"+secs : secs);
@@ -74,10 +70,10 @@ function startCountdown() {
 
 // State Backup Helper
 function backupCurrentState() {
-    sessionStorage.setItem('quiz_current_idx', currentIdx);
-    sessionStorage.setItem('quiz_current_score', score);
-    sessionStorage.setItem('quiz_user_choices', JSON.stringify(userChoices));
-    sessionStorage.setItem('quiz_is_review', isReview);
+    localStorage.setItem('quiz_current_idx', currentIdx);
+    localStorage.setItem('quiz_current_score', score);
+    localStorage.setItem('quiz_user_choices', JSON.stringify(userChoices));
+    localStorage.setItem('quiz_is_review', isReview);
 }
 
 // Core Question Loader Block
@@ -261,12 +257,12 @@ function autoSaveScore() {
 }
 
 function clearQuizSession() {
-    sessionStorage.removeItem('quiz_current_idx');
-    sessionStorage.removeItem('quiz_current_score');
-    sessionStorage.removeItem('quiz_user_choices');
-    sessionStorage.removeItem('quiz_time_left');
-    sessionStorage.removeItem('quiz_is_review');
-    sessionStorage.removeItem('quiz_session_key');
+    localStorage.removeItem('quiz_current_idx');
+    localStorage.removeItem('quiz_current_score');
+    localStorage.removeItem('quiz_user_choices');
+    localStorage.removeItem('quiz_time_left');
+    localStorage.removeItem('quiz_is_review');
+    localStorage.removeItem('quiz_session_key');
 }
 
 function showFinalPage() {
@@ -275,11 +271,7 @@ function showFinalPage() {
     
     const finalUi = document.getElementById('final-ui');
     finalUi.style.display = 'flex';
-    finalUi.style.flexDirection = 'column';
-    finalUi.style.justifyContent = 'center';
-    finalUi.style.alignItems = 'center';
-    finalUi.style.minHeight = '60vh'; 
-
+    
     var percent = Math.round((score / quizData.length) * 100) || 0;
     var msg = ""; 
     var tier = "";
@@ -305,7 +297,7 @@ function saveAndGoHome() {
 function restartQuizFresh() {
     playSnd('snd-click');
     clearQuizSession();
-    sessionStorage.setItem('quiz_session_key', quizSessionKey);
+    localStorage.setItem('quiz_session_key', quizSessionKey);
     currentIdx = 0; 
     score = 0; 
     answered = false; 
@@ -326,7 +318,7 @@ function startReview() {
     playSnd('snd-click'); 
     isReview = true; 
     currentIdx = 0; 
-    sessionStorage.setItem('quiz_is_review', 'true');
+    localStorage.setItem('quiz_is_review', 'true');
     document.getElementById('game-ui').style.display = 'block'; 
     document.getElementById('final-ui').style.display = 'none'; 
     loadQuestion(); 
@@ -351,7 +343,7 @@ async function loadQuizDataset() {
         startCountdown();
         loadQuestion();
         
-        if(sessionStorage.getItem('quiz_current_idx') === null && userChoices.length >= quizData.length) {
+        if(localStorage.getItem('quiz_current_idx') === null && userChoices.length >= quizData.length) {
              clearInterval(timerInterval);
              showFinalPage();
         }
@@ -362,4 +354,3 @@ async function loadQuizDataset() {
 }
 
 loadQuizDataset();
-                                                                                                           
