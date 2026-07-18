@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" translate="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>GSRTC Conductor MCQ Player</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,800&family=Hind+Vadodara:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/quiz_player.css">
+</head>
+<body>
+
+<audio id="snd-correct" src="https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3"></audio>
+<audio id="snd-wrong" src="https://assets.mixkit.co/active_storage/sfx/2003/2003-preview.mp3"></audio>
+<audio id="snd-click" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3"></audio>
+<audio id="snd-finish" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3"></audio>
+
+<div id="explainModal" class="modal">
+    <div class="explain-content">
+        <h3>💡 Explanation</h3>
+        <p id="explain-text"></p>
+        <button class="close-explain" onclick="closeExplain()">Close & Continue</button>
+    </div>
+</div>
+
+<div id="zoomModal" class="modal">
+    <span style="position:absolute; top:20px; right:30px; color:white; font-size:50px; cursor:pointer;" onclick="closeZoom()">×</span>
+    <img id="fullImg" onclick="closeZoom()" style="max-width:98%; max-height:90%; object-fit:contain;">
+</div>
+
+<div class="quiz-container">
+    <div id="review-tag" class="review-label">● REVIEW MODE</div>
+    <div class="header">
+        <h3 id="quiz-title">Loading Quiz...</h3>
+        <button id="mute-toggle" class="mute-btn" onclick="toggleMute()">🔊</button>
+    </div>
+    
+    <div id="game-ui">
+        <div id="lifeline-area" class="lifeline-bar">
+            <button id="fifty-fifty" class="lifeline-btn" onclick="useFiftyFifty()">🎭 50:50 Lifeline</button>
+        </div>
+        <div id="stats-bar">
+            <span id="score-display">Score: 0</span>
+            <span id="timer-display">⌛ 10:00</span>
+        </div>
+        <div class="img-box" id="image-container" onclick="openZoom()">
+            <img id="q-image" src="">
+            <div class="zoom-hint">🔍 Tap to Zoom</div>
+        </div>
+        <div id="question">Loading...</div>
+        <div class="options-grid" id="options-container">
+            <button class="option-btn" onclick="handleChoice(0)"></button>
+            <button class="option-btn" onclick="handleChoice(1)"></button>
+            <button class="option-btn" onclick="handleChoice(2)"></button>
+            <button class="option-btn" onclick="handleChoice(3)"></button>
+        </div>
+        
+        <div class="nav-controls-row">
+            <button id="back-btn" class="back-action-btn" onclick="handleBackQuestion()" style="display:none;">🔙 Back</button>
+            <button id="explain-btn" class="explain-action-btn" onclick="openExplain()">💡</button>
+            <button id="next-btn" class="next-action-btn" onclick="handleNext()">Next ➔</button>
+        </div>
+        
+        <div id="progress-text" class="progress"></div>
+    </div>
+
+    <div id="final-ui" style="display:none;">
+        <h2 style="font-family:var(--font-display); color:var(--ink); margin-top:0;">પરિણામ તૈયાર છે</h2>
+        <div class="final-ring" id="final-ring">
+            <div class="final-ring-inner">
+                <span class="score-num" id="final-score-num">0%</span>
+                <span class="score-label">SCORE</span>
+            </div>
+        </div>
+        <div class="final-tier" id="final-tier"></div>
+        <div id="final-msg" style="font-weight:600; margin:4px 0 6px; font-size:1rem; color:var(--ink-soft, #56637a);"></div>
+        <h3 id="final-score" style="color:var(--success); font-family:var(--font-mono); font-weight:600; font-size:0.9rem; margin-bottom:20px;"></h3>
+        <button class="secondary-btn" onclick="startReview()">🔍 Review Answers</button>
+        <button class="secondary-btn" onclick="restartQuizFresh()">🔄 Start Quiz Again</button>
+        <button class="secondary-btn" style="background:var(--success);" onclick="saveAndGoHome()">🏠 Back to Dashboard</button>
+    </div>
+</div>
+
+<script src="js/quiz_player.js"></script>
+</body>
+</html>
