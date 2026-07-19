@@ -1,4 +1,4 @@
-// ================== PARSE CONFIG PIPELINES ==================
+// ================== STATE AND APP VARIABLES PARAMETERS ==================
 const subject      = localStorage.getItem('last_active_subject') || "samanya_gyan"; 
 const branch       = localStorage.getItem('last_active_branch_guj') || "મોક ટેસ્ટ"; 
 const branchFolder = localStorage.getItem('last_active_branch') || "gujarat_history"; 
@@ -7,14 +7,14 @@ const quizNo       = localStorage.getItem('last_active_quiz_no') || "1";
 
 let originalData = [];
 let quizData = [];
-let timeLeft = 1500; // 25 Min
+let timeLeft = 1500; // 25 Mins
 let timerInterval;
 let testSubmitted = false;
-let userAnswers = {}; // { itemOriginalId: selectedOptionIndex }
+let userAnswers = {}; // Mapping ID lock array
 
 const STORAGE_KEY = `mock_${subject}_${branchFolder}_${type}_${quizNo}_v1`;
 
-// SYNC CORE GUJARATI HEADERS
+// SYNC CORE INDIAN METRICS TITLE
 document.getElementById('main-title').innerText = branch.split('(')[0].trim();
 function getGujNumber(num) {
     const digits = {'0':'૦','1':'૧','2':'૨','3':'૩','4':'૪','5':'૫','6':'૬','7':'૭','8':'૮','9':'૯'};
@@ -22,7 +22,7 @@ function getGujNumber(num) {
 }
 document.getElementById('sub-title').innerText = `📝 મોક ટેસ્ટ - ${getGujNumber(quizNo)}`;
 
-// FISHER-YATES SHUFFLE ENGINE
+// FISHER-YATES ALGORITHM SHUFFLE
 function shuffleArray(arr) {
     for (let i = arr.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -31,15 +31,14 @@ function shuffleArray(arr) {
     return arr;
 }
 
-// PIPELINE INITIAL LOAD ENGINE
+// SETUP CORE INTERFACES
 async function initMockEngine() {
     try {
         const res = await fetch(`data/${subject}/${branchFolder}/${type}_${quizNo}.json?v=${new Date().getTime()}`);
-        if(!res.ok) throw new Error("File not found");
+        if(!res.ok) throw new Error("Dataset link missing");
         originalData = await res.json();
-        originalData = originalData.slice(0, 25); // Top 25 limit lock
+        originalData = originalData.slice(0, 25); // Hard limiting to 25
 
-        // Check if there is a saved running session
         let saved = localStorage.getItem(STORAGE_KEY);
         if (saved) {
             let parsed = JSON.parse(saved);
@@ -47,7 +46,6 @@ async function initMockEngine() {
                 localStorage.removeItem(STORAGE_KEY);
                 setupFreshPaper();
             } else {
-                // Restore questions state mapping order
                 quizData = parsed.quizData;
                 userAnswers = parsed.userAnswers || {};
                 timeLeft = parsed.timeLeft;
@@ -60,13 +58,12 @@ async function initMockEngine() {
         restoreRadioClicks();
         startTimerEngine();
     } catch(err) {
-        alert("મોક ટેસ્ટ ડેટા લોડ કરવામાં ભૂલ આવી છે! પાથ ચેક કરો.");
+        alert("મોક ટેસ્ટ ફાઈલ ડેટાબેઝમાં મળી નથી!");
         window.history.back();
     }
 }
 
 function setupFreshPaper() {
-    // Advanced mapping framework that allows double shuffling (Questions + Options) safely
     quizData = originalData.map((item, originalIdx) => {
         const rightOptionText = item.options[item.correct];
         let optionsShuffled = [...item.options];
@@ -80,13 +77,13 @@ function setupFreshPaper() {
             correct: newCorrectIdx,
             img: item.img || null,
             explain_img: item.explain_img || null,
-            exp: item.exp || ""
+            explanation: item.explanation || "" // FIXED DETECT VARIABLE SYNC MATCH
         };
     });
-    shuffleArray(quizData); // Shuffle Questions Order completely
+    shuffleArray(quizData);
 }
 
-// ================== RENDERING COMPONENT ==================
+// ================== SHEET RENDERER ENGINE ==================
 function buildUIElements() {
     const container = document.getElementById('questions-container');
     container.innerHTML = "";
@@ -96,7 +93,8 @@ function buildUIElements() {
         div.className = 'question-block';
         div.id = `q-block-${idx}`;
         
-        let imgHtml = item.img ? `<div class="q-image-frame"><img src="${item.img}" alt="Question Image"></div>` : '';
+        // RENDER IMAGE AT THE TOP -- ABOVE THE QUESTION STRING TEXT
+        let imgHtml = item.img ? `<div class="q-image-frame"><img src="${item.img}" alt="Question Graphic Diagram"></div>` : '';
         
         div.innerHTML = `
             <div class="q-block-head">
@@ -148,7 +146,7 @@ function refreshProgressTracker() {
     document.getElementById('progress-text').innerText = `${doneCount}/${quizData.length}`;
 }
 
-// ================== GRID MATRIX PANEL ==================
+// ================== NAVIGATION POPUP PALETTE GRID ==================
 function buildGridSheet() {
     const grid = document.getElementById('palette-grid');
     grid.innerHTML = "";
@@ -185,7 +183,7 @@ function closePalette() {
 }
 document.getElementById('btn-palette').onclick = openPalette;
 
-// ================== INTERMEDIATE MODAL CONFIRMATION ==================
+// ================== DIALOG LAYER SYSTEM ==================
 function openSubmitModal() {
     if (testSubmitted) return;
     const answered = Object.keys(userAnswers).length;
@@ -195,7 +193,7 @@ function openSubmitModal() {
 }
 function closeSubmitModal() { document.getElementById('submit-modal').classList.remove('show'); }
 
-// ================== TIMERS AND AUTO TERMINATIONS ==================
+// ================== TIMER CLOCK ENGINE OPERATIONS ==================
 function startTimerEngine() {
     timerInterval = setInterval(() => {
         if (timeLeft <= 0) {
@@ -220,11 +218,10 @@ function updateTimerUI() {
 }
 
 function autoTimeOutTrigger() {
-    alert("🚨 સમય પૂરો થઈ ગયો છે! તમારો ટેસ્ટ આપમેળે સબમિટ થઈ રહ્યો છે.");
     processResults(true);
 }
 
-// ================== SCORING AND REVIEW GENERATION ==================
+// ================== DYNAMIC METRICS SCORE GENERATOR ==================
 function processResults(forced = false) {
     if(testSubmitted) return;
     closeSubmitModal();
@@ -233,9 +230,15 @@ function processResults(forced = false) {
 
     document.getElementById('mock-test-form').classList.add('submitted');
     
-    // Completely hide the questions sheet view panel first
+    // Hide the primary operational layout elements completely
     document.getElementById('questions-area').style.display = 'none';
     document.getElementById('btn-palette').style.display = 'none';
+
+    // Calculate time taken matrix
+    let elapsedSeconds = 1500 - timeLeft;
+    let elapsedMins = Math.floor(elapsedSeconds / 60);
+    let elapsedSecs = elapsedSeconds % 60;
+    let timeTakenString = `${elapsedMins < 10 ? '0'+elapsedMins : elapsedMins}:${elapsedSecs < 10 ? '0'+elapsedSecs : elapsedSecs} Min`;
 
     let correctTotal = 0, wrongTotal = 0, skippedTotal = 0;
 
@@ -244,12 +247,11 @@ function processResults(forced = false) {
         const itemUniqueId = item.id;
         const chosenIdx = userAnswers.hasOwnProperty(itemUniqueId) ? userAnswers[itemUniqueId] : null;
 
-        // Auto apply high visible markers to green standard
         const correctLabel = document.getElementById(`label-${idx}-${correctIdx}`);
         correctLabel.classList.add('correct-ans');
 
-        // Dynamic insert bulb engine to the ending corner of the right option string
-        if(item.exp || item.explain_img) {
+        // FIXED VARIABLE MISMATCH: Checks exact explanation / explain_img parameters strings
+        if(item.explanation || item.explain_img) {
             const bulbBtn = document.createElement('button');
             bulbBtn.type = 'button';
             bulbBtn.className = 'bulb-btn';
@@ -274,64 +276,66 @@ function processResults(forced = false) {
             }
         } else {
             skippedTotal++;
-            badges += `<span class="rev-status-badge" style="background:#f1f2f4; color:#64748b;">Left (छोડેલ)</span>`;
+            badges += `<span class="rev-status-badge" style="background:#f1f2f4; color:#64748b;">Left (છોડેલ)</span>`;
         }
         badgeRow.innerHTML = badges;
         badgeRow.style.display = 'flex';
 
-        // Block input radios selection completely
         document.querySelectorAll(`input[name="q${idx}"]`).forEach(inp => inp.disabled = true);
     });
 
-    // CRITICAL EVALUATION MATHEMATICS (-0.25 Kapat Formula)
+    // RE-EVALUATE ACCORDING TO USER EXACT PERFORMANCE MATRIX
     let negativeCut = wrongTotal * 0.25;
     let finalRealScore = correctTotal - negativeCut;
     if(finalRealScore < 0) finalRealScore = 0;
 
     let attemptedTotal = correctTotal + wrongTotal;
-    let accuracyPct = attemptedTotal > 0 ? Math.round((correctTotal / attemptedTotal) * 100) : 0;
-    let displayRingPct = Math.round((finalRealScore / quizData.length) * 100);
+    
+    // MATHEMATICAL LOGIC: Formula applied ((Right - (Wrong * 0.25)) / 25) * 100 with precision decimals
+    let displayRingPct = ((finalRealScore / quizData.length) * 100);
+    if(displayRingPct < 0) displayRingPct = 0;
 
-    // RENDER NEW ENGLISH EVALUATION LOOKS
-    document.getElementById('result-ring').style.setProperty('--pct', displayRingPct);
-    document.getElementById('result-pct').innerText = accuracyPct + '%';
+    // UPDATE UI ENGINE INTERFACES WITH EXACT .toFixed(2)
+    document.getElementById('result-ring').style.setProperty('--pct', Math.round(displayRingPct));
+    document.getElementById('result-pct').innerText = displayRingPct.toFixed(2) + '%';
     document.getElementById('final-score').innerText = `${finalRealScore.toFixed(2)} / ${quizData.length}`;
     
+    document.getElementById('stat-time-taken').innerText = timeTakenString;
     document.getElementById('stat-attempted').innerText = attemptedTotal;
     document.getElementById('stat-correct').innerText = correctTotal;
     document.getElementById('stat-wrong').innerText = wrongTotal;
     document.getElementById('stat-skipped').innerText = skippedTotal;
     document.getElementById('stat-negative').innerText = `-${negativeCut.toFixed(2)}`;
 
-    // Toggle View State
     document.getElementById('result-panel').style.display = 'block';
     
-    // Dynamic lock parameter string to master progress graph dashboard pipeline
     let masterSaveKey = `${subject}_${localStorage.getItem('last_active_branch_guj')}_${type}_${quizNo}_score`;
-    localStorage.setItem(masterSaveKey, displayRingPct);
+    localStorage.setItem(masterSaveKey, Math.round(displayRingPct));
 
     localStorage.removeItem(STORAGE_KEY);
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// TOGGLE REVIEW MODE TO UNFOLD QUESTIONS BACK
+// TOGGLE ACTION ENGINE TO COMPLETELY HIDE RESULT PANEL DURING ACTIVE QUESTIONS REVIEW
 document.getElementById('btn-review').onclick = () => {
+    document.getElementById('result-panel').style.display = 'none'; // HIDE RESULT SCREEN ENTIRELY
     document.body.classList.add('review-mode');
     document.getElementById('questions-area').style.display = 'block';
     document.getElementById('btn-palette').style.display = 'block';
     document.getElementById('questions-container').scrollIntoView({ behavior: 'smooth' });
 };
 
-// ================== POPUP COMPONENT (BULB ENGINE) ==================
+// ================== EXPANDABLE BULB MODAL CONTROLLER ==================
 function triggerBulbModal(item) {
     const targetBox = document.getElementById('bulb-modal-content');
     targetBox.innerHTML = "";
     
-    if(item.exp) {
+    // Sync using exact JSON locked key structure parameters
+    if(item.explanation) {
         const textPara = document.createElement('p');
         textPara.style.fontSize = "1.05rem";
         textPara.style.lineHeight = "1.5";
-        textPara.innerText = item.exp;
+        textPara.innerText = item.explanation;
         targetBox.appendChild(textPara);
     }
     
@@ -349,7 +353,7 @@ function triggerBulbModal(item) {
 }
 function closeBulbModal() { document.getElementById('bulb-modal').classList.remove('show'); }
 
-// ================== CACHE LIFECYCLE CONTROLS ==================
+// ================== STATE ENGINES CONTROLS ==================
 function saveSessionState() {
     try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify({
