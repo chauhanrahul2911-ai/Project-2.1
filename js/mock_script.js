@@ -251,16 +251,19 @@ function processResults(forced = false) {
         correctLabel.classList.add('correct-ans');
 
         // FIXED VARIABLE MISMATCH: Checks exact explanation / explain_img parameters strings
-        if(item.explanation || item.explain_img) {
-            const bulbBtn = document.createElement('button');
-            bulbBtn.type = 'button';
-            bulbBtn.className = 'bulb-btn';
-            bulbBtn.innerHTML = '💡';
-            bulbBtn.onclick = (e) => {
-                e.preventDefault();
-                triggerBulbModal(item);
-            };
-            correctLabel.appendChild(bulbBtn);
+        if ((item.explanation && item.explanation.trim() !== "") || item.explain_img) {
+        const bulbBtn = document.createElement('button');
+        bulbBtn.type = 'button';
+        bulbBtn.className = 'bulb-btn';
+        bulbBtn.innerHTML = '💡';
+    
+        // Explicitly click handler inject framework
+        bulbBtn.onclick = (e) => {
+        e.preventDefault();
+        e.stopPropagation(); // Event bubble block logic
+        triggerBulbModal(item);
+        };
+        correctLabel.appendChild(bulbBtn);
         }
 
         const badgeRow = document.getElementById(`badge-row-${idx}`);
