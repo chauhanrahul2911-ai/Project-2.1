@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="gu" translate="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>મોક ટેસ્ટ પ્લેયર</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/auto-render.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700;9..144,800&family=Hind+Vadodara:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="mock_style.css">
+</head>
+<body>
+
+<header class="test-header" id="test-header">
+    <div class="header-top">
+        <div class="header-title">
+            <h4 id="main-title">મોક ટેસ્ટ</h4>
+            <div id="sub-title" class="header-subtitle">લોડ થઈ રહ્યું છે...</div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <button type="button" class="header-grid-btn" id="btn-palette">☰ પ્રશ્નો</button>
+            <div id="timer" class="timer-box">⌛ 25:00</div>
+        </div>
+    </div>
+    <div class="header-progress-row">
+        <div class="progress-track"><div id="progress-fill" class="progress-fill"></div></div>
+        <span id="progress-text" class="progress-text">0/25</span>
+    </div>
+</header>
+
+<div class="container">
+    <!-- Separate Result Screen Section -->
+    <div id="result-panel" class="result-box">
+        <div class="result-ring" id="result-ring">
+            <div class="result-ring-inner">
+                <b id="result-pct">0%</b>
+                <span>ACCURACY</span>
+            </div>
+        </div>
+        <h3 style="margin:6px 0 2px; font-family: var(--font-display);">Result Dashboard</h3>
+        <div id="final-score" style="color: var(--success); font-weight:700; font-family: var(--font-mono); font-size: 1.4rem; margin-bottom: 12px;"></div>
+
+        <div class="result-stats-container">
+            <div class="res-row"><span>Attempted</span><b id="stat-attempted">0</b></div>
+            <div class="res-row"><span>Correct</span><b id="stat-correct" style="color:var(--success)">0</b></div>
+            <div class="res-row"><span>Wrong</span><b id="stat-wrong" style="color:var(--danger)">0</b></div>
+            <div class="res-row"><span>Left</span><b id="stat-skipped">0</b></div>
+            <div class="res-row"><span>Minus</span><b id="stat-negative" style="color:var(--danger)">0</b></div>
+        </div>
+
+        <div class="result-btn-row">
+            <button class="result-btn primary" id="btn-review">🔍 Review Answers</button>
+            <button class="result-btn secondary" onclick="location.reload()">🔄 Retry Test</button>
+            <button class="result-btn ghost" onclick="window.location.href='index.html'">🏠 Back to Dashboard</button>
+        </div>
+    </div>
+
+    <!-- Questions Sheet Area -->
+    <div id="questions-area">
+        <form id="mock-test-form">
+            <div id="questions-container"></div>
+            <button type="button" class="main-submit-btn" id="btn-main-submit" onclick="openSubmitModal()">સબમિટ મોક ટેસ્ટ</button>
+        </form>
+    </div>
+</div>
+
+<!-- PALETTE BOTTOM SHEET -->
+<div class="sheet-overlay" id="palette-overlay" onclick="closePalette()"></div>
+<div class="bottom-sheet" id="palette-sheet">
+    <div class="sheet-handle"></div>
+    <h4>પ્રશ્નોની યાદી</h4>
+    <div class="legend">
+        <span><i style="background:var(--success)"></i>જવાબ આપ્યો</span>
+        <span><i style="background:#b9c2d1"></i>બાકી</span>
+    </div>
+    <div class="palette-grid" id="palette-grid"></div>
+</div>
+
+<!-- SUBMIT CONFIRM MODAL -->
+<div class="modal-overlay" id="submit-modal">
+    <div class="modal-box">
+        <h3>સબમિટ કરવું છે?</h3>
+        <p style="color:var(--ink-soft); font-size:0.9rem; margin:4px 0 12px;">એકવાર સબમિટ કર્યા પછી જવાબો બદલી શકાશે નહીં.</p>
+        <div class="modal-stats">
+            <div class="modal-stat"><b id="modal-answered" style="color:var(--success)">0</b><span>જવાબ આપ્યા</span></div>
+            <div class="modal-stat"><b id="modal-remaining" style="color:var(--danger)">0</b><span>બાકી</span></div>
+        </div>
+        <button type="button" class="nav-modal-btn" style="background:var(--paper); color:var(--ink);" onclick="closeSubmitModal()">Continue Test</button>
+        <button type="button" class="nav-modal-btn" style="background:var(--ink); color:#fff;" onclick="processResults(true)">Submit Test</button>
+    </div>
+</div>
+
+<!-- BULB EXPLANATION MODAL POPUP -->
+<div class="modal-overlay" id="bulb-modal">
+    <div class="bulb-modal-box">
+        <button type="button" class="bulb-close-btn" onclick="closeBulbModal()">×</button>
+        <h4 style="margin: 0 0 12px 0; font-family: var(--font-display); color: var(--ink);">સમજૂતી (Explanation)</h4>
+        <div id="bulb-modal-content"></div>
+    </div>
+</div>
+
+<script src="mock_script.js"></script>
+</body>
+  </html>
