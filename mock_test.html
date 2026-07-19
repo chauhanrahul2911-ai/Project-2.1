@@ -16,13 +16,13 @@
 
 <header class="test-header" id="test-header">
     <div class="header-top">
-        <div class="header-title">
+        <div class="header-left">
             <h4 id="main-title">મોક ટેસ્ટ</h4>
             <div id="sub-title" class="header-subtitle">લોડ થઈ રહ્યું છે...</div>
         </div>
-        <div style="display: flex; align-items: center; gap: 8px;">
-            <button type="button" class="header-grid-btn" id="btn-palette">☰ પ્રશ્નો</button>
+        <div class="header-right-stack">
             <div id="timer" class="timer-box">⌛ 25:00</div>
+            <button type="button" class="header-grid-btn" id="btn-palette">☰ પ્રશ્નો</button>
         </div>
     </div>
     <div class="header-progress-row">
@@ -32,18 +32,19 @@
 </header>
 
 <div class="container">
-    <!-- Separate Result Screen Section -->
+    <!-- Separate Result Dashboard Screen -->
     <div id="result-panel" class="result-box">
         <div class="result-ring" id="result-ring">
             <div class="result-ring-inner">
-                <b id="result-pct">0%</b>
-                <span>ACCURACY</span>
+                <b id="result-pct">0.00%</b>
+                <span>SCORE %</span>
             </div>
         </div>
         <h3 style="margin:6px 0 2px; font-family: var(--font-display);">Result Dashboard</h3>
         <div id="final-score" style="color: var(--success); font-weight:700; font-family: var(--font-mono); font-size: 1.4rem; margin-bottom: 12px;"></div>
 
         <div class="result-stats-container">
+            <div class="res-row"><span>Time Taken</span><b id="stat-time-taken" style="color:var(--ink)">00:00 Min</b></div>
             <div class="res-row"><span>Attempted</span><b id="stat-attempted">0</b></div>
             <div class="res-row"><span>Correct</span><b id="stat-correct" style="color:var(--success)">0</b></div>
             <div class="res-row"><span>Wrong</span><b id="stat-wrong" style="color:var(--danger)">0</b></div>
@@ -58,7 +59,7 @@
         </div>
     </div>
 
-    <!-- Questions Sheet Area -->
+    <!-- Main Active Test Area -->
     <div id="questions-area">
         <form id="mock-test-form">
             <div id="questions-container"></div>
@@ -93,7 +94,7 @@
     </div>
 </div>
 
-<!-- BULB EXPLANATION MODAL POPUP -->
+<!-- BULB POPUP SYSTEM -->
 <div class="modal-overlay" id="bulb-modal">
     <div class="bulb-modal-box">
         <button type="button" class="bulb-close-btn" onclick="closeBulbModal()">×</button>
@@ -104,4 +105,4 @@
 
 <script src="js/mock_script.js"></script>
 </body>
-  </html>
+</html>
