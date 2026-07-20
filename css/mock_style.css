@@ -61,11 +61,12 @@ body {
 }
 
 .header-title h4 { 
-    margin: 0; 
+    margin: 0 !important; /* Poora default margin khatam */
+    padding: 0 !important;
     font-weight: 700; 
     font-family: var(--font-display); 
     font-size: 1.05rem; 
-    line-height: 1.2; 
+    line-height: 1.1; /* Line spacing ko tight kiya */
     white-space: nowrap; 
     overflow: hidden; 
     text-overflow: ellipsis; 
@@ -76,17 +77,18 @@ body {
     color: var(--gold-light); 
     font-weight: 600; 
     letter-spacing: 0.3px; 
-    margin: 1px 0 0 0; 
+    margin: 0 !important; /* Title ke sath chipkane ke liye margin 0 */
+    padding: 0 !important;
+    line-height: 1.1; /* Dono lines ka beech ka gap khatam */
 }
 
-/* HARD INLINE LOCK: FORCE THE BAR TO REMAIN INLINE WITH TEXT ON ONE ROW */
 .header-progress-inline-row { 
     display: flex !important; 
     align-items: center !important; 
     flex-direction: row !important;
     flex-wrap: nowrap !important;
     gap: 8px !important; 
-    margin-top: 5px !important; 
+    margin-top: 2px !important; /* Subtitle se halka sa gap dene ke liye */
     width: 100% !important; 
     max-width: 58vw !important;
 }
