@@ -29,11 +29,11 @@ body {
 
 .container { max-width: 600px; margin: auto; padding: 12px 12px 60px; }
 
-/* ============ STICKY HEADER WITH TWIN BLOCKS ============ */
+/* ============ ULTRA-SLIM OPTIMIZED STICKY HEADER ============ */
 .test-header {
     background: var(--ink);
     color: white;
-    padding: 12px 16px 14px;
+    padding: 8px 14px 8px; /* Ultra-slim spacing */
     position: sticky;
     top: 0;
     z-index: 100;
@@ -45,47 +45,50 @@ body {
 .test-header.time-danger { background: linear-gradient(135deg, #7a1f1a, #c7443b); border-bottom-color: #fff; animation: header-pulse 1s infinite; }
 @keyframes header-pulse { 0%,100% { box-shadow: 0 4px 15px rgba(199,68,59,0.35);} 50% { box-shadow: 0 4px 25px rgba(199,68,59,0.7);} }
 
-.header-top { display: flex; justify-content: space-between; align-items: center; gap: 14px; }
-.header-left { display: flex; flex-direction: column; flex: 1; }
-.header-title h4 { margin: 0; font-weight: 700; font-family: var(--font-display); font-size: 1.05rem; line-height: 1.25; }
-.header-subtitle { font-size: 0.72rem; color: var(--gold-light); font-weight: 600; letter-spacing: 0.5px; margin-top: 2px; }
+.header-main-container { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.header-left-block { display: flex; flex-direction: column; flex: 1; min-width: 0; }
 
-.header-right-stack { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; flex-shrink: 0; }
+.header-title h4 { margin: 0; font-weight: 700; font-family: var(--font-display); font-size: 1.05rem; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.header-subtitle { font-size: 0.72rem; color: var(--gold-light); font-weight: 600; letter-spacing: 0.5px; margin-top: 1px; }
+
+/* INLINE PROGRESS ENGINE BLOCK AS REQUESTED IN CANVA PROTOTYPE */
+.header-progress-inline-row { display: flex; align-items: center; gap: 8px; margin-top: 6px; width: 100%; max-width: 260px; }
+.progress-track { flex: 1; height: 6px; border-radius: 4px; background: rgba(255,255,255,0.15); overflow: hidden; }
+.progress-fill { height: 100%; background: linear-gradient(90deg, var(--gold) 0%, var(--gold-light) 100%); border-radius: 4px; width: 0%; transition: width 0.35s ease; }
+.progress-text { font-size: 0.72rem; font-family: var(--font-mono); color: #cdd6e6; white-space: nowrap; font-weight: 700; }
+
+/* VERTICAL RIGHT PANEL STACK CONTROLS */
+.header-right-stack { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0; }
 
 .header-grid-btn {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.08);
     color: white;
-    border: 1px solid rgba(255,255,255,0.2);
-    padding: 4px 10px;
+    border: 1px solid rgba(255,255,255,0.18);
+    padding: 3px 8px;
     border-radius: 6px;
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     font-weight: 700;
     cursor: pointer;
     font-family: var(--font-body);
-    width: 82px;
+    width: 78px;
     text-align: center;
 }
-.header-grid-btn:hover { background: rgba(255, 255, 255, 0.2); }
+.header-grid-btn:hover { background: rgba(255, 255, 255, 0.18); }
 
 .timer-box {
     font-family: var(--font-mono);
     background: rgba(255,255,255,0.12);
-    padding: 5px 10px;
+    padding: 4px 8px;
     border-radius: 6px;
     border: 1px solid var(--gold-light);
     color: var(--gold-light);
     font-weight: 700;
-    font-size: 0.88rem;
+    font-size: 0.85rem;
     white-space: nowrap;
-    width: 82px;
+    width: 78px;
     text-align: center;
 }
 .time-warn .timer-box, .time-danger .timer-box { color: #fff; border-color: #fff; background: rgba(255,255,255,0.18); }
-
-.header-progress-row { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
-.progress-track { flex: 1; height: 8px; border-radius: 6px; background: rgba(255,255,255,0.15); overflow: hidden; }
-.progress-fill { height: 100%; background: linear-gradient(90deg, var(--gold) 0%, var(--gold-light) 100%); border-radius: 6px; width: 0%; transition: width 0.35s ease; }
-.progress-text { font-size: 0.72rem; font-family: var(--font-mono); color: #cdd6e6; white-space: nowrap; }
 
 /* ============ QUESTION CARD AND OVERHEAD IMG ============ */
 .question-block {
@@ -95,7 +98,7 @@ body {
     margin: 16px 0;
     box-shadow: 0 4px 14px rgba(15, 35, 64, 0.06);
     border-left: 4px solid var(--gold);
-    scroll-margin-top: 110px;
+    scroll-margin-top: 85px; /* Tuned to dynamic header height */
 }
 
 .q-block-head { margin-bottom: 12px; }
