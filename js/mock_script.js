@@ -10,11 +10,11 @@ let quizData = [];
 let timeLeft = 1500; // 25 Mins
 let timerInterval;
 let testSubmitted = false;
-let userAnswers = {}; // Mapping ID lock array
+let userAnswers = {}; 
 
 const STORAGE_KEY = `mock_${subject}_${branchFolder}_${type}_${quizNo}_v1`;
 
-// SYNC CORE INDIAN METRICS TITLE
+// SYNC CORE METRICS DYNAMIC TEXT
 document.getElementById('main-title').innerText = branch.split('(')[0].trim();
 function getGujNumber(num) {
     const digits = {'0':'૦','1':'૧','2':'૨','3':'૩','4':'૪','5':'૫','6':'૬','7':'૭','8':'૮','9':'૯'};
@@ -31,13 +31,13 @@ function shuffleArray(arr) {
     return arr;
 }
 
-// SETUP CORE INTERFACES
+// SETUP CORE INITIAL SECTIONS
 async function initMockEngine() {
     try {
         const res = await fetch(`data/${subject}/${branchFolder}/${type}_${quizNo}.json?v=${new Date().getTime()}`);
-        if(!res.ok) throw new Error("Dataset link missing");
+        if(!res.ok) throw new Error("Dataset response bad");
         originalData = await res.json();
-        originalData = originalData.slice(0, 25); // Hard limiting to 25
+        originalData = originalData.slice(0, 25); 
 
         let saved = localStorage.getItem(STORAGE_KEY);
         if (saved) {
@@ -77,7 +77,7 @@ function setupFreshPaper() {
             correct: newCorrectIdx,
             img: item.img || null,
             explain_img: item.explain_img || null,
-            explanation: item.explanation || "" // FIXED DETECT VARIABLE SYNC MATCH
+            explanation: item.explanation || ""
         };
     });
     shuffleArray(quizData);
@@ -93,7 +93,6 @@ function buildUIElements() {
         div.className = 'question-block';
         div.id = `q-block-${idx}`;
         
-        // RENDER IMAGE AT THE TOP -- ABOVE THE QUESTION STRING TEXT
         let imgHtml = item.img ? `<div class="q-image-frame"><img src="${item.img}" alt="Question Graphic Diagram"></div>` : '';
         
         div.innerHTML = `
@@ -146,7 +145,7 @@ function refreshProgressTracker() {
     document.getElementById('progress-text').innerText = `${doneCount}/${quizData.length}`;
 }
 
-// ================== NAVIGATION POPUP PALETTE GRID ==================
+// ================== DYNAMIC CONTROLS GRID SHEET ==================
 function buildGridSheet() {
     const grid = document.getElementById('palette-grid');
     grid.innerHTML = "";
@@ -183,7 +182,6 @@ function closePalette() {
 }
 document.getElementById('btn-palette').onclick = openPalette;
 
-// ================== DIALOG LAYER SYSTEM ==================
 function openSubmitModal() {
     if (testSubmitted) return;
     const answered = Object.keys(userAnswers).length;
@@ -193,7 +191,7 @@ function openSubmitModal() {
 }
 function closeSubmitModal() { document.getElementById('submit-modal').classList.remove('show'); }
 
-// ================== TIMER CLOCK ENGINE OPERATIONS ==================
+// ================== TIMERS MATRIX CONTROLS ==================
 function startTimerEngine() {
     timerInterval = setInterval(() => {
         if (timeLeft <= 0) {
@@ -221,7 +219,7 @@ function autoTimeOutTrigger() {
     processResults(true);
 }
 
-// ================== DYNAMIC METRICS SCORE GENERATOR ==================
+// ================== METRICS MATHEMATICAL COMPILER ==================
 function processResults(forced = false) {
     if(testSubmitted) return;
     closeSubmitModal();
@@ -229,12 +227,9 @@ function processResults(forced = false) {
     testSubmitted = true;
 
     document.getElementById('mock-test-form').classList.add('submitted');
-    
-    // Hide the primary operational layout elements completely
     document.getElementById('questions-area').style.display = 'none';
     document.getElementById('btn-palette').style.display = 'none';
 
-    // Calculate time taken matrix
     let elapsedSeconds = 1500 - timeLeft;
     let elapsedMins = Math.floor(elapsedSeconds / 60);
     let elapsedSecs = elapsedSeconds % 60;
@@ -250,20 +245,17 @@ function processResults(forced = false) {
         const correctLabel = document.getElementById(`label-${idx}-${correctIdx}`);
         correctLabel.classList.add('correct-ans');
 
-        // FIXED VARIABLE MISMATCH: Checks exact explanation / explain_img parameters strings
         if ((item.explanation && item.explanation.trim() !== "") || item.explain_img) {
-        const bulbBtn = document.createElement('button');
-        bulbBtn.type = 'button';
-        bulbBtn.className = 'bulb-btn';
-        bulbBtn.innerHTML = '💡';
-    
-        // Explicitly click handler inject framework
-        bulbBtn.onclick = (e) => {
-        e.preventDefault();
-        e.stopPropagation(); // Event bubble block logic
-        triggerBulbModal(item);
-        };
-        correctLabel.appendChild(bulbBtn);
+            const bulbBtn = document.createElement('button');
+            bulbBtn.type = 'button';
+            bulbBtn.className = 'bulb-btn';
+            bulbBtn.innerHTML = '💡';
+            bulbBtn.onclick = (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                triggerBulbModal(item);
+            };
+            correctLabel.appendChild(bulbBtn);
         }
 
         const badgeRow = document.getElementById(`badge-row-${idx}`);
@@ -287,18 +279,16 @@ function processResults(forced = false) {
         document.querySelectorAll(`input[name="q${idx}"]`).forEach(inp => inp.disabled = true);
     });
 
-    // RE-EVALUATE ACCORDING TO USER EXACT PERFORMANCE MATRIX
     let negativeCut = wrongTotal * 0.25;
     let finalRealScore = correctTotal - negativeCut;
     if(finalRealScore < 0) finalRealScore = 0;
 
     let attemptedTotal = correctTotal + wrongTotal;
     
-    // MATHEMATICAL LOGIC: Formula applied ((Right - (Wrong * 0.25)) / 25) * 100 with precision decimals
+    // SCORE COMPILING FORMULA: ((Right - (Wrong * 0.25)) / 25) * 100 precision
     let displayRingPct = ((finalRealScore / quizData.length) * 100);
     if(displayRingPct < 0) displayRingPct = 0;
 
-    // UPDATE UI ENGINE INTERFACES WITH EXACT .toFixed(2)
     document.getElementById('result-ring').style.setProperty('--pct', Math.round(displayRingPct));
     document.getElementById('result-pct').innerText = displayRingPct.toFixed(2) + '%';
     document.getElementById('final-score').innerText = `${finalRealScore.toFixed(2)} / ${quizData.length}`;
@@ -319,21 +309,19 @@ function processResults(forced = false) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// TOGGLE ACTION ENGINE TO COMPLETELY HIDE RESULT PANEL DURING ACTIVE QUESTIONS REVIEW
 document.getElementById('btn-review').onclick = () => {
-    document.getElementById('result-panel').style.display = 'none'; // HIDE RESULT SCREEN ENTIRELY
+    document.getElementById('result-panel').style.display = 'none'; 
     document.body.classList.add('review-mode');
     document.getElementById('questions-area').style.display = 'block';
     document.getElementById('btn-palette').style.display = 'block';
     document.getElementById('questions-container').scrollIntoView({ behavior: 'smooth' });
 };
 
-// ================== EXPANDABLE BULB MODAL CONTROLLER ==================
+// ================== POPUP SOLUTION CORE MODULES ==================
 function triggerBulbModal(item) {
     const targetBox = document.getElementById('bulb-modal-content');
     targetBox.innerHTML = "";
     
-    // Sync using exact JSON locked key structure parameters
     if(item.explanation) {
         const textPara = document.createElement('p');
         textPara.style.fontSize = "1.05rem";
