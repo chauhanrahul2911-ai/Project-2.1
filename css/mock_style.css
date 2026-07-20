@@ -29,11 +29,11 @@ body {
 
 .container { max-width: 600px; margin: auto; padding: 12px 12px 60px; }
 
-/* ============ ULTRA-SLIM RESPONSIVE STICKY HEADER ============ */
+/* ============ DYNAMIC GRID OPTIMIZED HEADER ============ */
 .test-header {
     background: var(--ink);
     color: white;
-    padding: 6px 12px; /* Fixed small padding to reduce height */
+    padding: 6px 12px;
     position: sticky;
     top: 0;
     z-index: 100;
@@ -45,20 +45,86 @@ body {
 .test-header.time-danger { background: linear-gradient(135deg, #7a1f1a, #c7443b); border-bottom-color: #fff; animation: header-pulse 1s infinite; }
 @keyframes header-pulse { 0%,100% { box-shadow: 0 4px 15px rgba(199,68,59,0.35);} 50% { box-shadow: 0 4px 25px rgba(199,68,59,0.7);} }
 
-.header-main-container { display: flex; justify-content: space-between; align-items: center; gap: 10px; width: 100%; }
-.header-left-block { display: flex; flex-direction: column; flex: 1; min-width: 0; }
+.header-main-container { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    width: 100%; 
+    gap: 12px;
+}
 
-.header-title h4 { margin: 0; font-weight: 700; font-family: var(--font-display); font-size: 1rem; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.header-subtitle { font-size: 0.7rem; color: var(--gold-light); font-weight: 600; letter-spacing: 0.3px; margin-top: 1px; }
+.header-left-block { 
+    display: flex; 
+    flex-direction: column; 
+    flex: 1; 
+    min-width: 0;
+}
 
-/* FIXED INLINE PROGRESS BAR ENGINE */
-.header-progress-inline-row { display: flex; align-items: center; gap: 6px; margin-top: 4px; width: 100%; max-width: 62vw; }
-.progress-track { flex: 1; height: 6px; border-radius: 4px; background: rgba(255,255,255,0.15); overflow: hidden; }
-.progress-fill { height: 100%; background: linear-gradient(90deg, var(--gold) 0%, var(--gold-light) 100%); border-radius: 4px; width: 0%; transition: width 0.35s ease; }
-.progress-text { font-size: 0.7rem; font-family: var(--font-mono); color: #cdd6e6; white-space: nowrap; font-weight: 700; }
+.header-title h4 { 
+    margin: 0; 
+    font-weight: 700; 
+    font-family: var(--font-display); 
+    font-size: 1.05rem; 
+    line-height: 1.2; 
+    white-space: nowrap; 
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+}
 
-/* VERTICAL CONTROL PANELS STACK */
-.header-right-stack { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0; }
+.header-subtitle { 
+    font-size: 0.72rem; 
+    color: var(--gold-light); 
+    font-weight: 600; 
+    letter-spacing: 0.3px; 
+    margin: 1px 0 0 0; 
+}
+
+/* HARD INLINE LOCK: FORCE THE BAR TO REMAIN INLINE WITH TEXT ON ONE ROW */
+.header-progress-inline-row { 
+    display: flex !important; 
+    align-items: center !important; 
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    gap: 8px; 
+    margin-top: 5px; 
+    width: 100%; 
+    max-width: 60vw;
+}
+
+.progress-track { 
+    flex: 1; 
+    height: 6px; 
+    border-radius: 4px; 
+    background: rgba(255, 255, 255, 0.15); 
+    overflow: hidden;
+    min-width: 60px;
+}
+
+.progress-fill { 
+    height: 100%; 
+    background: linear-gradient(90deg, var(--gold) 0%, var(--gold-light) 100%); 
+    border-radius: 4px; 
+    width: 0%; 
+    transition: width 0.35s ease; 
+}
+
+.progress-text { 
+    font-size: 0.72rem; 
+    font-family: var(--font-mono); 
+    color: #cdd6e6; 
+    white-space: nowrap; 
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+/* RIGHT STACK WITH EXPLICIT DIMS */
+.header-right-stack { 
+    display: flex; 
+    flex-direction: column; 
+    align-items: flex-end; 
+    gap: 4px; 
+    flex-shrink: 0;
+}
 
 .header-grid-btn {
     background: rgba(255, 255, 255, 0.08);
@@ -98,7 +164,7 @@ body {
     margin: 16px 0;
     box-shadow: 0 4px 14px rgba(15, 35, 64, 0.06);
     border-left: 4px solid var(--gold);
-    scroll-margin-top: 85px; /* Perfect anchor scroll height offset */
+    scroll-margin-top: 82px; /* Anchor scroll aligned precisely */
 }
 
 .q-block-head { margin-bottom: 12px; }
