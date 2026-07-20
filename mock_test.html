@@ -15,19 +15,22 @@
 <body>
 
 <header class="test-header" id="test-header">
-    <div class="header-top">
-        <div class="header-left">
+    <div class="header-main-container">
+        <!-- LEFT BLOCK: Dynamic Titles + Compact Inline Progress Bar -->
+        <div class="header-left-block">
             <h4 id="main-title">મોક ટેસ્ટ</h4>
             <div id="sub-title" class="header-subtitle">લોડ થઈ રહ્યું છે...</div>
+            <div class="header-progress-inline-row">
+                <div class="progress-track"><div id="progress-fill" class="progress-fill"></div></div>
+                <span id="progress-text" class="progress-text">0/25</span>
+            </div>
         </div>
+        
+        <!-- RIGHT BLOCK: Micro Stacked Control Panels -->
         <div class="header-right-stack">
             <div id="timer" class="timer-box">⌛ 25:00</div>
             <button type="button" class="header-grid-btn" id="btn-palette">☰ પ્રશ્નો</button>
         </div>
-    </div>
-    <div class="header-progress-row">
-        <div class="progress-track"><div id="progress-fill" class="progress-fill"></div></div>
-        <span id="progress-text" class="progress-text">0/25</span>
     </div>
 </header>
 
