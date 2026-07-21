@@ -7,13 +7,13 @@ const quizNo       = localStorage.getItem('last_active_quiz_no') || "1";
 
 let originalData = [];
 let quizData = [];
-let timeLeft = 1500; 
+let timeLeft = 1500; // 25 Mins
 let timerInterval;
 let testSubmitted = false;
 let userAnswers = {}; 
 let isSoundMuted = false;
 
-// WEB AUDIO SYNTHESIZER CLICK GENERATOR
+// WEB AUDIO CLICK SOUND GENERATOR
 let audioCtx = null;
 function playClickSound() {
     if (isSoundMuted) return;
@@ -48,7 +48,7 @@ function getGujNumber(num) {
     return String(num).split('').map(d => digits[d] || d).join('');
 }
 
-// DYNAMICALLY SYNC HEADERS
+// SYNC CORE METRICS DYNAMIC TEXT
 document.getElementById('main-title').innerText = branch.split('(')[0].trim();
 document.getElementById('sub-title').innerText = `📝 મોક ટેસ્ટ - ${getGujNumber(quizNo)}`;
 document.getElementById('res-dynamic-title').innerText = `${branch.split('(')[0].trim()} - Mock Test ${quizNo}`;
@@ -61,6 +61,7 @@ function shuffleArray(arr) {
     return arr;
 }
 
+// SETUP CORE INITIAL SECTIONS
 async function initMockEngine() {
     try {
         const res = await fetch(`data/${subject}/${branchFolder}/${type}_${quizNo}.json?v=${new Date().getTime()}`);
@@ -112,6 +113,7 @@ function setupFreshPaper() {
     shuffleArray(quizData);
 }
 
+// ================== SHEET RENDERER ENGINE ==================
 function buildUIElements() {
     const container = document.getElementById('questions-container');
     container.innerHTML = "";
@@ -121,7 +123,7 @@ function buildUIElements() {
         div.className = 'question-block';
         div.id = `q-block-${idx}`;
         
-        let imgHtml = item.img ? `<div class="q-image-frame"><img src="${item.img}" alt="Graphic"></div>` : '';
+        let imgHtml = item.img ? `<div class="q-image-frame"><img src="${item.img}" alt="Question Graphic Diagram"></div>` : '';
         
         div.innerHTML = `
             <div class="q-block-head">
@@ -156,7 +158,7 @@ function buildUIElements() {
 function registerAnswer(qIdx, oIdx) {
     if(testSubmitted) return;
     playClickSound(); // PLAY SOUND ON SELECTION
-    
+
     const itemUniqueId = quizData[qIdx].id;
     userAnswers[itemUniqueId] = oIdx;
 
@@ -175,6 +177,7 @@ function refreshProgressTracker() {
     document.getElementById('progress-text').innerText = `${doneCount}/${quizData.length}`;
 }
 
+// ================== DYNAMIC CONTROLS GRID SHEET ==================
 function buildGridSheet() {
     const grid = document.getElementById('palette-grid');
     grid.innerHTML = "";
@@ -211,19 +214,6 @@ function closePalette() {
 }
 document.getElementById('btn-palette').onclick = openPalette;
 
-// ================== MAIN SUBMIT / REVIEW BUTTON LOGIC ==================
-function handleMainBottomBtn() {
-    if (testSubmitted) {
-        // FINISH REVIEW ACTION -> RESULT BOARD PAR WAPAS LENA
-        document.getElementById('questions-area').style.display = 'none';
-        document.getElementById('result-panel').style.display = 'block';
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    } else {
-        // TEST SUBMIT MODAL KHOLNA
-        openSubmitModal();
-    }
-}
-
 function openSubmitModal() {
     if (testSubmitted) return;
     const answered = Object.keys(userAnswers).length;
@@ -231,11 +221,20 @@ function openSubmitModal() {
     document.getElementById('modal-remaining').innerText = quizData.length - answered;
     document.getElementById('submit-modal').classList.add('show');
 }
+function closeSubmitModal() { document.getElementById('submit-modal').classList.remove('show'); }
 
-function closeSubmitModal() { 
-    document.getElementById('submit-modal').classList.remove('show'); 
+// BOTTOM BUTTON ACTION (SUBMIT OR FINISH REVIEW)
+function handleMainBottomBtn() {
+    if (testSubmitted) {
+        document.getElementById('questions-area').style.display = 'none';
+        document.getElementById('result-panel').style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+        openSubmitModal();
+    }
 }
 
+// ================== TIMERS MATRIX CONTROLS ==================
 function startTimerEngine() {
     timerInterval = setInterval(() => {
         if (timeLeft <= 0) {
@@ -259,8 +258,11 @@ function updateTimerUI() {
     else if(timeLeft <= 300) header.classList.add('time-warn');
 }
 
-function autoTimeOutTrigger() { processResults(true); }
+function autoTimeOutTrigger() {
+    processResults(true);
+}
 
+// ================== METRICS MATHEMATICAL COMPILER ==================
 function processResults(forced = false) {
     if(testSubmitted) return;
     closeSubmitModal();
@@ -271,7 +273,7 @@ function processResults(forced = false) {
     document.getElementById('test-header').style.display = 'none'; // GAYAB NAVBAR ON RESULT
     document.getElementById('questions-area').style.display = 'none';
 
-    let correctTotal = 0, wrongTotal = 0;
+    let correctTotal = 0, wrongTotal = 0, skippedTotal = 0;
 
     quizData.forEach((item, idx) => {
         const correctIdx = item.correct;
@@ -295,7 +297,7 @@ function processResults(forced = false) {
         }
 
         const badgeRow = document.getElementById(`badge-row-${idx}`);
-        let badges = `<span class="rev-status-badge" style="background:var(--success-wash); color:#14532d;">Correct: ${item.options[correctIdx]}</span>`;
+        let badges = `<span class="rev-status-badge" style="background:var(--success-wash); color:#14532d;">Correct Ans: ${item.options[correctIdx]}</span>`;
 
         if (chosenIdx !== null) {
             if (chosenIdx === correctIdx) {
@@ -305,6 +307,9 @@ function processResults(forced = false) {
                 badges += `<span class="rev-status-badge" style="background:var(--danger-wash); color:#7f1d1d;">Your Ans: ${item.options[chosenIdx]}</span>`;
                 wrongTotal++;
             }
+        } else {
+            skippedTotal++;
+            badges += `<span class="rev-status-badge" style="background:#f1f2f4; color:#64748b;">Left (છોડેલ)</span>`;
         }
         badgeRow.innerHTML = badges;
         badgeRow.style.display = 'flex';
@@ -312,7 +317,8 @@ function processResults(forced = false) {
         document.querySelectorAll(`input[name="q${idx}"]`).forEach(inp => inp.disabled = true);
     });
 
-    let finalRealScore = correctTotal - (wrongTotal * 0.25);
+    let negativeCut = wrongTotal * 0.25;
+    let finalRealScore = correctTotal - negativeCut;
     if(finalRealScore < 0) finalRealScore = 0;
 
     let displayRingPct = Math.round((finalRealScore / quizData.length) * 100);
@@ -331,13 +337,18 @@ function processResults(forced = false) {
     }
 
     document.getElementById('result-panel').style.display = 'block';
+    
+    let masterSaveKey = `${subject}_${localStorage.getItem('last_active_branch_guj')}_${type}_${quizNo}_score`;
+    localStorage.setItem(masterSaveKey, displayRingPct);
+
     localStorage.removeItem(STORAGE_KEY);
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// REVIEW ANSWERS TRIGGER
+// REVIEW ANSWERS CLICK
 document.getElementById('btn-review').onclick = () => {
     document.getElementById('result-panel').style.display = 'none'; 
+    document.body.classList.add('review-mode');
     document.getElementById('questions-area').style.display = 'block';
     
     // UPDATE BOTTOM BUTTON TO FINISH REVIEW
@@ -345,13 +356,15 @@ document.getElementById('btn-review').onclick = () => {
     bottomBtn.innerText = "Finish Review (પરિણામ પર વળદો)";
     bottomBtn.style.background = "var(--ink)";
     bottomBtn.style.color = "#ffffff";
-    
+
     document.getElementById('questions-container').scrollIntoView({ behavior: 'smooth' });
 };
 
+// ================== POPUP SOLUTION CORE MODULES ==================
 function triggerBulbModal(item) {
     const targetBox = document.getElementById('bulb-modal-content');
     targetBox.innerHTML = "";
+    
     if(item.explanation) {
         const textPara = document.createElement('p');
         textPara.style.fontSize = "1.05rem";
@@ -359,12 +372,14 @@ function triggerBulbModal(item) {
         textPara.innerText = item.explanation;
         targetBox.appendChild(textPara);
     }
+    
     if(item.explain_img) {
         const imgObj = document.createElement('img');
         imgObj.src = item.explain_img;
         imgObj.className = 'bulb-img-fullscreen';
         targetBox.appendChild(imgObj);
     }
+
     document.getElementById('bulb-modal').classList.add('show');
     if (typeof renderMathInElement === 'function') {
         renderMathInElement(targetBox, { delimiters: [{left: '$', right: '$', display: false}] });
@@ -372,6 +387,7 @@ function triggerBulbModal(item) {
 }
 function closeBulbModal() { document.getElementById('bulb-modal').classList.remove('show'); }
 
+// ================== STATE ENGINES CONTROLS ==================
 function saveSessionState() {
     try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify({
