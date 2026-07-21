@@ -341,9 +341,12 @@ function processResults(forced = false) {
     if(displayRingPct < 0) displayRingPct = 0;
 
     document.getElementById('result-ring').style.setProperty('--pct', Math.round(displayRingPct));
-    document.getElementById('result-pct').innerText = displayRingPct.toFixed(2) + '%';
-    document.getElementById('final-score').innerText = `${finalRealScore.toFixed(2)} / ${quizData.length}`;
-    
+
+    // Percentage se .00 hata kar round figure kar diya (e.g., 7%)
+    document.getElementById('result-pct').innerText = Math.round(displayRingPct) + '%';
+
+    // Score mein agar decimal zaroori ho tabhi dikhega (e.g., 1.75 / 25, aur 2 / 25)
+    document.getElementById('final-score').innerText = `${Number(finalRealScore.toFixed(2))} / ${quizData.length}`;    
     document.getElementById('stat-time-taken').innerText = timeTakenString;
     document.getElementById('stat-attempted').innerText = attemptedTotal;
     document.getElementById('stat-correct').innerText = correctTotal;
