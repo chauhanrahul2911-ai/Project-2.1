@@ -211,6 +211,19 @@ function closePalette() {
 }
 document.getElementById('btn-palette').onclick = openPalette;
 
+// ================== MAIN SUBMIT / REVIEW BUTTON LOGIC ==================
+function handleMainBottomBtn() {
+    if (testSubmitted) {
+        // FINISH REVIEW ACTION -> RESULT BOARD PAR WAPAS LENA
+        document.getElementById('questions-area').style.display = 'none';
+        document.getElementById('result-panel').style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+        // TEST SUBMIT MODAL KHOLNA
+        openSubmitModal();
+    }
+}
+
 function openSubmitModal() {
     if (testSubmitted) return;
     const answered = Object.keys(userAnswers).length;
@@ -218,17 +231,9 @@ function openSubmitModal() {
     document.getElementById('modal-remaining').innerText = quizData.length - answered;
     document.getElementById('submit-modal').classList.add('show');
 }
-function closeSubmitModal() { document.getElementById('submit-modal').classList.remove('show'); }
 
-function handleMainBottomBtn() {
-    if (testSubmitted) {
-        // FINISH REVIEW ACTION -> GO BACK TO RESULT BOARD
-        document.getElementById('questions-area').style.display = 'none';
-        document.getElementById('result-panel').style.display = 'block';
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    } else {
-        openSubmitModal();
-    }
+function closeSubmitModal() { 
+    document.getElementById('submit-modal').classList.remove('show'); 
 }
 
 function startTimerEngine() {
