@@ -48,7 +48,7 @@ function getGujNumber(num) {
     return String(num).split('').map(d => digits[d] || d).join('');
 }
 
-// SYNC CORE METRICS DYNAMIC TEXT
+// DYNAMICALLY SET TITLE HEADERS
 document.getElementById('main-title').innerText = branch.split('(')[0].trim();
 document.getElementById('sub-title').innerText = `📝 મોક ટેસ્ટ - ${getGujNumber(quizNo)}`;
 document.getElementById('res-dynamic-title').innerText = `${branch.split('(')[0].trim()} - Mock Test ${quizNo}`;
@@ -199,7 +199,7 @@ function buildGridSheet() {
 function updateGridCellState(idx) {
     const cell = document.getElementById(`cell-grid-${idx}`);
     if(!cell) return;
-    const itemUniqueId = quizData[idx].id;
+    const itemUniqueId = quizData[idx].idx;
     cell.classList.remove('answered');
     if(userAnswers.hasOwnProperty(itemUniqueId)) cell.classList.add('answered');
 }
@@ -232,6 +232,12 @@ function handleMainBottomBtn() {
     } else {
         openSubmitModal();
     }
+}
+
+// RESTART TEST FRESH (CLEAR CACHE)
+function restartTestFresh() {
+    localStorage.removeItem(STORAGE_KEY);
+    location.reload();
 }
 
 // ================== TIMERS MATRIX CONTROLS ==================
@@ -270,8 +276,13 @@ function processResults(forced = false) {
     testSubmitted = true;
 
     document.getElementById('mock-test-form').classList.add('submitted');
-    document.getElementById('test-header').style.display = 'none'; // GAYAB NAVBAR ON RESULT
+    document.getElementById('test-header').style.display = 'none'; // GAYAB STICKY NAVBAR ON RESULT
     document.getElementById('questions-area').style.display = 'none';
+
+    let elapsedSeconds = 1500 - timeLeft;
+    let elapsedMins = Math.floor(elapsedSeconds / 60);
+    let elapsedSecs = elapsedSeconds % 60;
+    let timeTakenString = `${elapsedMins < 10 ? '0'+elapsedMins : elapsedMins}:${elapsedSecs < 10 ? '0'+elapsedSecs : elapsedSecs} Min`;
 
     let correctTotal = 0, wrongTotal = 0, skippedTotal = 0;
 
@@ -321,25 +332,25 @@ function processResults(forced = false) {
     let finalRealScore = correctTotal - negativeCut;
     if(finalRealScore < 0) finalRealScore = 0;
 
-    let displayRingPct = Math.round((finalRealScore / quizData.length) * 100);
+    let attemptedTotal = correctTotal + wrongTotal;
+    let displayRingPct = ((finalRealScore / quizData.length) * 100);
+    if(displayRingPct < 0) displayRingPct = 0;
 
-    document.getElementById('result-ring').style.setProperty('--pct', displayRingPct);
-    document.getElementById('result-pct').innerText = displayRingPct + '%';
-    document.getElementById('final-correct-count').innerText = correctTotal;
-    document.getElementById('final-total-count').innerText = quizData.length;
-
-    if (displayRingPct >= 70) {
-        document.getElementById('res-feedback-text').innerText = "🎉 ઉત્કૃષ્ટ પ્રદર્શન!";
-    } else if(displayRingPct >= 40) {
-        document.getElementById('res-feedback-text').innerText = "👍 સારું પ્રદર્શન!";
-    } else {
-        document.getElementById('res-feedback-text').innerText = "📖 વધુ પ્રેક્ટિસ જરૂરી";
-    }
+    document.getElementById('result-ring').style.setProperty('--pct', Math.round(displayRingPct));
+    document.getElementById('result-pct').innerText = displayRingPct.toFixed(2) + '%';
+    document.getElementById('final-score').innerText = `${finalRealScore.toFixed(2)} / ${quizData.length}`;
+    
+    document.getElementById('stat-time-taken').innerText = timeTakenString;
+    document.getElementById('stat-attempted').innerText = attemptedTotal;
+    document.getElementById('stat-correct').innerText = correctTotal;
+    document.getElementById('stat-wrong').innerText = wrongTotal;
+    document.getElementById('stat-skipped').innerText = skippedTotal;
+    document.getElementById('stat-negative').innerText = `-${negativeCut.toFixed(2)}`;
 
     document.getElementById('result-panel').style.display = 'block';
     
     let masterSaveKey = `${subject}_${localStorage.getItem('last_active_branch_guj')}_${type}_${quizNo}_score`;
-    localStorage.setItem(masterSaveKey, displayRingPct);
+    localStorage.setItem(masterSaveKey, Math.round(displayRingPct));
 
     localStorage.removeItem(STORAGE_KEY);
     window.scrollTo({ top: 0, behavior: 'smooth' });
