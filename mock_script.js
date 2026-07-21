@@ -48,10 +48,13 @@ function getGujNumber(num) {
     return String(num).split('').map(d => digits[d] || d).join('');
 }
 
-// DYNAMICALLY SET TITLE HEADERS
+// DYNAMICALLY SYNC ALL HEADERS (NORMAL, RESULT & REVIEW)
+const formattedDynamicTitle = `${branch.split('(')[0].trim()} - ${type} ${quizNo}`;
+
 document.getElementById('main-title').innerText = branch.split('(')[0].trim();
 document.getElementById('sub-title').innerText = `📝 મોક ટેસ્ટ - ${getGujNumber(quizNo)}`;
-document.getElementById('res-dynamic-title').innerText = `${branch.split('(')[0].trim()} - Mock Test ${quizNo}`;
+document.getElementById('res-dynamic-title').innerText = formattedDynamicTitle;
+document.getElementById('review-title').innerText = formattedDynamicTitle;
 
 function shuffleArray(arr) {
     for (let i = arr.length - 1; i > 0; i--) {
@@ -199,7 +202,7 @@ function buildGridSheet() {
 function updateGridCellState(idx) {
     const cell = document.getElementById(`cell-grid-${idx}`);
     if(!cell) return;
-    const itemUniqueId = quizData[idx].idx;
+    const itemUniqueId = quizData[idx].id;
     cell.classList.remove('answered');
     if(userAnswers.hasOwnProperty(itemUniqueId)) cell.classList.add('answered');
 }
@@ -227,6 +230,7 @@ function closeSubmitModal() { document.getElementById('submit-modal').classList.
 function handleMainBottomBtn() {
     if (testSubmitted) {
         document.getElementById('questions-area').style.display = 'none';
+        document.getElementById('review-header').style.display = 'none'; // HIDE REVIEW HEADER ON RESULT
         document.getElementById('result-panel').style.display = 'block';
         window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
@@ -360,6 +364,11 @@ function processResults(forced = false) {
 document.getElementById('btn-review').onclick = () => {
     document.getElementById('result-panel').style.display = 'none'; 
     document.body.classList.add('review-mode');
+    
+    // TOGGLE HEADERS FOR CLEAN SINGLE LINE IN REVIEW MODE
+    document.getElementById('test-header').style.display = 'none';
+    document.getElementById('review-header').style.display = 'block';
+
     document.getElementById('questions-area').style.display = 'block';
     
     // UPDATE BOTTOM BUTTON TO FINISH REVIEW
